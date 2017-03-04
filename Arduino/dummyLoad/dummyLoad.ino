@@ -32,7 +32,7 @@ To - Dos
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <ClickEncoder.h>
-#include <TimerOne.h>
+#include "TimerOne.h"
 
 // Set Constants
 // set pin 8 as the chip select for the ADC:
@@ -440,15 +440,15 @@ void updateLCD(int displayType) {
   case 0:
     if (updateDisplay()) {
       lcd.clear();
-      sprintf(buf, "%s = ", language_voltage);
+      sprintf(buf, "%s", language_voltage);
       lcd.print(buf);
-      lcd.setCursor(10, 0);
+      lcd.setCursor(11, 0);
       lcd.print(g_inputVoltage, 3);
       lcd.print("V");
       lcd.setCursor(0, 1);
-      sprintf(buf, "%s =", language_current);
+      sprintf(buf, "%s", language_current);
       lcd.print(buf);
-      lcd.setCursor(10, 1);
+      lcd.setCursor(11, 1);
       lcd.print(g_setCurrent, 3);
       lcd.print("A");
       if (g_mode == k_currentMode) {
@@ -456,9 +456,9 @@ void updateLCD(int displayType) {
         lcd.print("<");
       }
       lcd.setCursor(0, 2);
-      sprintf(buf, "%s =", language_resistance);
+      sprintf(buf, "%s", language_resistance);
       lcd.print(buf);
-      lcd.setCursor(10, 2);
+      lcd.setCursor(11, 2);
       lcd.print(g_setResistance, 3);
       lcd.print(char(0xF4));
       if (g_mode == k_resistanceMode) {
@@ -466,9 +466,9 @@ void updateLCD(int displayType) {
         lcd.print("<");
       }
       lcd.setCursor(0, 3);
-      sprintf(buf, "%s =", language_power);
+      sprintf(buf, "%s", language_power);
       lcd.print(buf);
-      lcd.setCursor(10, 3);
+      lcd.setCursor(11, 3);
       lcd.print(g_setPower, 3);
       lcd.print("W");
       if (g_mode == k_powerMode) {
@@ -505,6 +505,20 @@ void updateLCD(int displayType) {
     }
     break;
   }
+}
+
+void updateSerial() {
+    Serial.print(g_inputVoltage, 3);
+    Serial.print("V, ");
+    Serial.print(g_setCurrent, 3);
+    Serial.print("A, ");
+    Serial.print(g_setResistance, 3);
+    Serial.print("Oh, ");
+    Serial.print(g_setPower, 3);
+    Serial.print("W, ");
+    Serial.print(readTemp());
+    Serial.print("C");        
+    Serial.println("");
 }
 
 /*
@@ -606,4 +620,5 @@ void loop() {
   // Updates the LCD display. Accepts the lcdDisplay variable which
   // defines if the values or menu is to be displayed.
   updateLCD(g_lcdDisplay);
+  //updateSerial();
 } // End of loop function.
